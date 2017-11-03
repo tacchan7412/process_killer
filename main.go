@@ -15,7 +15,6 @@ func main() {
 	intervalPtr := flag.Int64("interval", 10, "interval of checking status and killing")
 	flag.Parse()
 
-	fmt.Println(*commandPtr, *killSecPtr, *intervalPtr)
 	cmd := fmt.Sprintf("ps -eo pid,etime,command | grep '%s' | grep -v grep | awk -v OFS='\t' '$1=$1'", (*commandPtr))
 	// cmd := "ps -eo pid,etime,command | grep '[s]leep' | awk -v OFS='\t' '$1=$1'"
 	for {
@@ -35,8 +34,8 @@ func main() {
 				break
 			}
 
-			min, _ := strconv.ParseInt(times[len(times)-1], 10, 64)
-			sec, _ := strconv.ParseInt(times[len(times)-2], 10, 64)
+			sec, _ := strconv.ParseInt(times[len(times)-1], 10, 64)
+			min, _ := strconv.ParseInt(times[len(times)-2], 10, 64)
 			if min*60+sec < *killSecPtr {
 				break
 			}
