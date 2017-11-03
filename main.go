@@ -16,7 +16,6 @@ func main() {
 	flag.Parse()
 
 	cmd := fmt.Sprintf("ps -eo pid,etime,command | grep '%s' | grep -v grep | awk -v OFS='\t' '$1=$1'", (*commandPtr))
-	// cmd := "ps -eo pid,etime,command | grep '[s]leep' | awk -v OFS='\t' '$1=$1'"
 	for {
 		out, _ := exec.Command("sh", "-c", cmd).Output()
 
@@ -24,20 +23,20 @@ func main() {
 		for _, line := range lines[:len(lines)-1] {
 			arr := strings.Split(line, "\t")
 			if len(arr) < 2 {
-				break
+				continue
 			}
 
 			pid := arr[0]
 			etime := arr[1]
 			times := strings.Split(etime, ":")
 			if len(times) < 2 {
-				break
+				continue
 			}
 
 			sec, _ := strconv.ParseInt(times[len(times)-1], 10, 64)
 			min, _ := strconv.ParseInt(times[len(times)-2], 10, 64)
 			if min*60+sec < *killSecPtr {
-				break
+				continue
 			}
 
 			killCmd := fmt.Sprintf("sudo kill -9 %s", pid)
